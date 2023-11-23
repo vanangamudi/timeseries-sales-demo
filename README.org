@@ -1,0 +1,13 @@
+* How to run the code
+- Install the required python packages using pip.
+- Run the following command. 
+  #+begin_src shell
+    python experiment.py -d data/train.csv
+  #+end_src
+
+- Note:: that the =load_sales-csv= function must be modified to load the whole data
+   - The following lines must be removed to load the whole dataset.
+#+begin_src python
+  if float(r.store_nbr) != 1:
+      continue
+#+end_src
