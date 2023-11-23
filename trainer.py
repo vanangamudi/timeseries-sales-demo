@@ -18,8 +18,8 @@ class Trainer:
             trainloader,
             testloader,
             cuda = False,
-            epochs = 1000000,
-            every_nepoch = 1000,
+            epochs = 1000,
+            every_nepoch = 10,
             batch_size = 10,
     ):
 
@@ -165,7 +165,7 @@ class Trainer:
             losses.append(loss)
             #accuracies.append(accuracy)
             
-        return torch.stack(losses).mean().item(), torch.stack(accuracies).mean().item()
+        return torch.stack(losses).mean().item()#, torch.stack(accuracies).mean().item()
     
     def eval_epoch(self, epoch, testloader=None):
         self.model.eval()

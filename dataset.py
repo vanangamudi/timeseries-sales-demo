@@ -31,7 +31,7 @@ def load_sales_csv(path, separator=','):
         for i, line in tqdm(enumerate(
                 csv.reader(f, delimiter=',', quotechar='"'))):
             if i==0: continue
-            if i > 100000: break
+            #if i > 100000: break
             try:
                 id_, date, store_nbr, family, sales, onpromotion = line
                 year, month, day = date.split('-')
@@ -55,8 +55,11 @@ def load_sales_csv(path, separator=','):
 
     families = make_vocab(Counter(families))
     stores = make_vocab(Counter(stores))
+    newrecs = []
     for i, r in enumerate(records):
-        records[i] = Record(
+        if float(r.store_nbr) != 1:
+            continue
+        newrecs.append(Record(
             r.id_,
             r.date,
             r.year,
@@ -66,9 +69,9 @@ def load_sales_csv(path, separator=','):
             families[r.family], 
             r.onpromotion,
             r.sales,
-        )
+        ))
 
-    return records, families, stores
+    return newrecs, families, stores
 
 def make_timeseries(records):
     tsrecords = defaultdict(list)
