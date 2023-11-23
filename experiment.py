@@ -16,7 +16,7 @@ import matplotlib.pyplot as plt
 import torch
 from torch import nn
 from torch.utils.data import DataLoader
-from model import LSTMModel
+from model import LSTMModel  as Model
 from dataset import TSDataset, load_data
 
 from functools import partial
@@ -35,7 +35,6 @@ def plot(trainer, epoch, testsets):
     offset = 0
     for i, (name, testset) in enumerate(testsets.items()):
         testloader = DataLoader(testset,
-                                shuffle=hpconfig['testset_shuffle'],
                                 batch_size = hpconfig["batch_size"],
                                 )
                 
@@ -92,10 +91,15 @@ def collate_fn(data):
     input_, output = zip(*data)
 
     X = []
-    for x in input_:
-        X.append(torch.tensor([x.year, x.month, x.day, x.store_nbr, x.family]))
-        
-    return features.float(), labels.long(), lengths.long()
+    Y = []
+    for x, y in data:
+        X.append([
+            (xi.year, xi.month, xi.day, xi.store_nbr, xi.family, xi.onpromotion, xi.sales) for xi in x 
+        ] )
+
+        Y.append([y.sales])
+
+    return torch.tensor(X) , torch.tensor(Y)
 
 if __name__ == '__main__':
  
@@ -116,21 +120,20 @@ if __name__ == '__main__':
     trainset, testset = load_data(config, hpconfig, args.dataset)
     #plt.plot([r.sales for r in random.choice(trainset.input_)])
     #plt.show()
-        
-    #model = Model(utils.config, hpconfig,  input_.size(1),  output.size(0))
     
-    trainloader = DataLoader(trainset,
-                             collate_fn = collate_fn,
-                             batch_size = hpconfig["batch_size"],
-                             )
+    trainloader = DataLoader(
+        trainset,
+        collate_fn = collate_fn,
+        batch_size = hpconfig["batch_size"],
+    )
     
-    testloader = DataLoader(testset,
-                            collate_fn = collate_fn,
-                            batch_size = hpconfig["batch_size"],
-                            )
-
-    for i in trainloader:
-        break
+    testloader = DataLoader(
+        testset,
+        collate_fn = collate_fn,
+        batch_size = hpconfig["batch_size"],
+    )
+    
+    model = Model(utils.config, hpconfig,  7,  1)
     
     print(model)
     trainer = trainer.Trainer (

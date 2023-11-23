@@ -89,12 +89,14 @@ class Trainer:
                  self.save_count,
                  ) = json.load(f)
         except:
-            log.exception('cannot load trainer state...')
+            log.info('fresh start')
+            #log.exception('cannot load trainer state...')
 
         try:
             self.model.load_state_dict(torch.load(self.weights_path))
         except:
-            log.exception('cannot load model...')
+            #log.exception('cannot load model...')
+            log.info('fresh start')
             
     def write_metric(self, metric, path):
         with open(self.config['metrics_path'][path], 'w') as f:
@@ -111,9 +113,9 @@ class Trainer:
             
         output  =  self.model(input_)
         loss    =  self.loss_function(output, target)
-        accuracy = (output == target).float().mean()
+        #accuracy = (output == target).float().mean()
         
-        return loss, accuracy
+        return loss#, accuracy
 
     def eval_step(self, batch):
         input_, target = batch
@@ -157,10 +159,11 @@ class Trainer:
         losses     = []
         accuracies = []
         for batch in self.testloader:
-            loss, accuracy = self.validate_step(batch)
+            #loss, accuracy = self.validate_step(batch)
+            loss = self.validate_step(batch)
             
             losses.append(loss)
-            accuracies.append(accuracy)
+            #accuracies.append(accuracy)
             
         return torch.stack(losses).mean().item(), torch.stack(accuracies).mean().item()
     
@@ -198,13 +201,21 @@ class Trainer:
                     'epoch:{} - loss:{:0.4f} - saves:{}'.format(
                         epoch, loss, self.save_count))
                 
+                
+                
                 if epoch and epoch % self.every_nepoch == 0:
-                    loss, accuracy = self.validate_epoch(epoch)
-                    self.accuracy_records.append((epoch, accuracy))
+                    print('epoch:{} - loss:{:0.4f} - saves:{}'
+                          .format(epoch, loss, self.save_count))
 
-                    print('test epoch: {}, loss:{} accuracy: {}'.format(epoch, loss, accuracy))
+                    #loss, accuracy = self.validate_epoch(epoch)
+                    loss = self.validate_epoch(epoch)
+                    #self.accuracy_records.append((epoch, accuracy))
+
+                    print('test epoch: {}, loss:{}'
+                          .format(epoch, loss))
+                    
                     self.write_metric(loss, 'loss_path')
-                    self.write_metric(accuracy, 'accuracy_path')
+                    #self.write_metric(accuracy, 'accuracy_path')
 
                 loss = self.train_epoch(epoch)
                 self.loss_records.append((epoch, loss))

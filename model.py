@@ -16,7 +16,6 @@ class LSTMModel(nn.Module):
 
         self.num_layers = hpconfig['num_layers']
         self.hidden_size = hpconfig['hidden_size']
-        self.seq_length  = hpconfig['seq_length']
 
         self.lstm = nn.LSTM(input_size=input_size, hidden_size=self.hidden_size,
                             num_layers=self.num_layers, batch_first=True)

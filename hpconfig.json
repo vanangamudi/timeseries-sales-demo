@@ -1,11 +1,9 @@
 {
-    "hidden_size": 51,
-    "resample_ratio": 100,
+    "batch_size": 100,
+    "hidden_size": 100,
     "window_size": 30,
     "num_layers": 1,
+    
     "loss_path": "loss.txt",
-    "accuracy_path": "accuracy.txt",
-    "batch_size": 123,
-    "testset_shuffle": false,
-    "trainset_shuffle": true
+    "accuracy_path": "accuracy.txt"
 }
