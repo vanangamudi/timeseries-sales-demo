@@ -1,0 +1,14 @@
+{
+    "verbose" : true,
+    "dirs" : {
+	"root": "/home/vanangamudi/agam/projects/code/saama/primer-pde"
+    },
+    
+    "metrics_path" : {
+	"loss_path" : "loss.txt",
+	"accuracy_path" : "accuracy.txt"
+    },
+
+    "hash" : "0xdeadbeef",
+    "cuda" : false
+}
